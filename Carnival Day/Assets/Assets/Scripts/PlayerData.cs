@@ -15,4 +15,11 @@ public class PlayerData
     public string aName { set; get; }
 
     public int aValue { set; get; }
+
+    public float[] aLocationArray { set; get; }
+    
+    public PlayerData()
+    {
+        aLocationArray = new float[2]; // size 2 bc location will use x and y values 
+    }
 }
