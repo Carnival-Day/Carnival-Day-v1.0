@@ -54,7 +54,7 @@ public class PlayerController : MonoBehaviour
         if (playerFromMongo == null) {
             // Create playerdata when the game is running to define some variable
             _playerData = new PlayerData();
-            _playerData.aName = "Phyllie";
+            _playerData.aName = "Laika";
             _playerData.aValue = 0;
         } else {
             // PlayerData as PlayerfromMongo
