@@ -53,6 +53,10 @@ ExportedObj/
 *.mdb.meta
 *.sln.meta
 
+# UnityEditor generated files
+*.xsd
+*.json
+
 # Unity3D generated file on crash reports
 sysinfo.txt
 
