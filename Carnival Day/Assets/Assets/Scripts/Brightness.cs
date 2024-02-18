@@ -11,9 +11,11 @@ public class Brightness : MonoBehaviour
     public PostProcessLayer layer;
 
     private AutoExposure exposure;
+
     // Start is called before the first frame update
 
-    //Match the brightness with the slider value when game start
+    //Function to match the brightness with the slider value when game start
+    //Get default value from brightness object, set that value to brightnessSlider's value
     void Start()
     {
         brightness.TryGetSettings(out exposure);
