@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99b12a77ff6ce144a884aa51e4f78cb4, type: 3}
+  m_Name: Chompers
+  m_EditorClassIdentifier: 
+  speakerName: Chompers
+  paragraphs:
+  - Well Well... Look who we have here.
+  - Get over here kid, you're the new worker right? Thought so.
+  - We don't have much time before the carnival opens so let me give you a quick
+    run down. So listen up.
+  - Next to me is where you will need to access upgrades for the carnival. You need
+    money for that.
+  - Since I'm feeling so generous, here's 600 for the first one.
+  - 'Other than that, there''s the controls, W, A, S, D is to walk and C is to crouch. '
+  - J is for your tasks and M is for the map.
+  - That's all, you can leave now. I have things to do.
+  language: 

@@ -1,0 +1,202 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Text;
+using UnityEngine.Networking;
+using MongoDB.Driver;
+
+//For work review 4 Update was updated by Derick Pan
+//start() load player data, gives a tag, starts a code routine to download data from mongodb
+public class PlayerController : MonoBehaviour, IDataPersistence
+{
+    // References
+    public Rigidbody theRB;
+
+    // Reference to player data
+    private PlayerData _playerData;
+
+    // Client establishes link from unity to the mongodb server
+    private MongoClient client;
+    // Database allows us to pick which database within the server to pull from
+    private IMongoDatabase database;
+    // Collection allows us to make reference to the collection within the database given a type (playerdata)
+    private IMongoCollection<PlayerData> collection;
+
+    // How fast we move and jump around
+    public float moveSpeed;
+
+    // Keep track of character movement
+    private Vector2 moveInput;
+
+    // Reference to the animator
+    public Animator anim;
+
+    // Flipping the animation
+    public SpriteRenderer theSR;
+
+    // Setting for the animator
+    public Animator flipAmin;
+
+    // moving backwards and forward animation
+    private bool movingBackwards;
+    private bool movingForward;
+
+    public float crouchSpeed = 2f; // Speed when crouching
+    private bool isCrouching = false;
+
+    // Flag to control walking
+    private bool walkingEnabled = true;
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        // Create a link to mongodb server
+        client = new MongoClient("mongodb+srv://andrewnguyen22:5900@carnivalday.zvgjz0w.mongodb.net/");
+        database = client.GetDatabase("TestDB");
+        collection = database.GetCollection<PlayerData>("testCollection");
+
+        // Attempts to pull the playerdata from mongodb server using aName as the key
+        PlayerData playerFromMongo = collection.Find(data => data.aName == "Honk").SingleOrDefault();
+        // If nothing was pulled from the server
+        if (playerFromMongo == null)
+        {
+            // Create playerdata when the game is running to define some variable
+            _playerData = new PlayerData();
+            _playerData.aName = "Laika";
+            _playerData.aValue = 0;
+        }
+        else
+        {
+            // PlayerData as PlayerfromMongo
+            _playerData = playerFromMongo;
+        }
+    }
+    // The following two functions was done for Work review 4 by Derick Pan
+    public void EnableWalking()
+    {
+        walkingEnabled = true;
+    }
+
+    public void DisableWalking()
+    {
+        walkingEnabled = false;
+    }
+
+    public void LoadData(GameData data)
+    {
+        this.transform.position = data.playerPosition;
+    }
+
+    public void SaveData(ref GameData data)
+    {
+        data.playerPosition = this.transform.position;
+
+    }
+
+    // Update is called once per frame
+
+    //UPDATE was updated for our work for review 4 by Derick Pan
+    void Update()
+    {
+    
+        if (!walkingEnabled)
+        {
+            // If walking is disabled, return without updating movement
+            return;
+        }
+        HandleCrouching();
+        HandleMovementInput();
+        UpdateMovement();
+        UpdateCharacterDirection();
+        UpdateCharacterPosition();
+        TriggerValueChange();
+        OnApplicationQuit();
+
+    void HandleCrouching()
+    {
+        isCrouching = Input.GetKey(KeyCode.C);
+        moveSpeed = isCrouching ? crouchSpeed : 5f;
+    }
+
+    void HandleMovementInput()
+    {
+        moveInput.x = Input.GetAxis("Horizontal");
+        moveInput.y = Input.GetAxis("Vertical");
+        moveInput.Normalize();
+    }
+
+    void UpdateMovement()
+    {
+        theRB.velocity = new Vector3(moveInput.x * moveSpeed, theRB.velocity.y, moveInput.y * moveSpeed);
+        anim.SetFloat("moveSpeed", theRB.velocity.magnitude);
+    }
+
+    void UpdateCharacterDirection()
+    {
+        if (moveInput.x < 0 && !theSR.flipX)
+        {
+            theSR.flipX = true;
+            flipAmin.SetTrigger("Flip");
+        }
+        else if (moveInput.x > 0 && theSR.flipX)
+        {
+            theSR.flipX = false;
+            flipAmin.SetTrigger("Flip");
+        }
+    }
+
+    void UpdateCharacterPosition()
+    {
+        bool shouldMoveBackwards = moveInput.y > 0;
+        if (shouldMoveBackwards != movingBackwards)
+        {
+            movingBackwards = shouldMoveBackwards;
+            flipAmin.SetTrigger("Flip");
+        }
+
+        bool shouldMoveForward = moveInput.y < 0;
+        if (shouldMoveForward != movingForward)
+        {
+            movingForward = shouldMoveForward;
+            flipAmin.SetTrigger("Flip");
+        }
+
+        anim.SetBool("isCrouching", isCrouching);
+        anim.SetBool("movingBackwards", movingBackwards);
+        anim.SetBool("movingForward", movingForward);
+    }
+
+    void TriggerValueChange()
+    {
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            _playerData.aValue--;
+            Debug.Log(_playerData.aValue);
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
+        {
+            _playerData.aValue++;
+            Debug.Log(_playerData.aValue);
+        }
+    }
+
+        // Whenever the game stops running it will execute whatever is in there last
+    void OnApplicationQuit()
+    {
+        // Attempts to pull the playerdata from mongodb server using aName as the key
+        PlayerData playerFromMongo = collection.Find(data => data.aName == "Honk").SingleOrDefault();
+        // If nothing was pulled from the server
+        if (playerFromMongo == null)
+        {
+            // Inserting the playerdata object to mongodb
+            collection.InsertOne(_playerData);
+        }
+        else
+        {
+            // Replace the data existing within mongodb with the updated player data from the play session
+            collection.FindOneAndReplace(data => data.aName == "Honk", _playerData);
+        }
+    }
+
+}}

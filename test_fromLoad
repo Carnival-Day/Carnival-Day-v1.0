@@ -1,0 +1,16 @@
+{
+    "deathCount": 0,
+    "playerName": "Phyllie",
+    "playerPosition": {
+        "x": -109.39095306396485,
+        "y": 4.300000190734863,
+        "z": 111.9883804321289
+    },
+    "prize1": false,
+    "prize2": true,
+    "prize3": false,
+    "prize4": false,
+    "currency": 487,
+    "whackamole": false,
+    "balloonpop": true
+}
