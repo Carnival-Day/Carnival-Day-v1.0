@@ -1,0 +1,112 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Playables;
+
+// Pair programming Andrew and Derick Work review 4
+public class ActivateCutscene : MonoBehaviour
+{
+    // Reference to the PlayableDirector component that controls the cutscene
+    [SerializeField] private PlayableDirector playableDirector;
+    [SerializeField] private bool reactivateAutomatically = false;
+    [SerializeField] private float reactivationDelay = 10.0f;
+    [SerializeField] private Light sceneLight; 
+    [SerializeField] private AudioSource audioSource; 
+
+    // Called when another collider enters the trigger collider attached to this GameObject
+    //If the person collides with the box then it'll activate
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playableDirector.Play();
+            GetComponent<BoxCollider>().enabled = false;
+
+            if (sceneLight != null)
+            {
+                StartCoroutine(DimLight(0.5f, 1f));
+            }
+
+            if (audioSource != null)
+            {
+                audioSource.PlayOneShot(audioSource.clip);
+            }
+        }
+    }
+
+    //Modify the lighting
+    private IEnumerator StartCutsceneAfterDelay()
+    {
+        yield return new WaitForSeconds(reactivationDelay);
+        playableDirector.Play();
+        Debug.Log("Cutscene started ");
+
+        if (sceneLight != null)
+        {
+            StartCoroutine(RestoreLight(1.0f, 1f));
+        }
+    }
+
+    private void OnCutsceneStopped(PlayableDirector director)
+    {
+        if (reactivateAutomatically)
+            StartCoroutine(ReactivateTriggerAfterDelay());
+        PlayerController.EnableControls();
+        GameState.CheckStateChanges();
+        ObjectiveManager.UpdateObjectives("Find the Artifact");
+        SaveGameManager.SaveGame();
+        Debug.Log("end cutscene");
+
+        // FULL BRIGHT
+        if (sceneLight != null)
+            sceneLight.intensity = 1.0f;
+    }
+
+    private IEnumerator ReactivateTriggerAfterDelay()
+    {
+        yield return new WaitForSeconds(10);
+        GetComponent<BoxCollider>().enabled = true;
+        Debug.Log("Trigger on");
+    }
+
+    public void SetCutsceneActivation(bool activationState)
+    {
+        GetComponent<BoxCollider>().enabled = activationState;
+        Debug.Log("cutscene activated);
+    }
+
+    public void SetReactivateAutomatically(bool state, float delay = 10.0f)
+    {
+        reactivateAutomatically = state;
+        reactivationDelay = delay;
+        Debug.Log("autoreacti");
+    }
+
+    private IEnumerator DimLight(float targetIntensity, float duration)
+    {
+        float currentIntensity = sceneLight.intensity;
+        float time = 0;
+
+        while (time < duration)
+        {
+            sceneLight.intensity = Mathf.Lerp(currentIntensity, targetIntensity, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        sceneLight.intensity = targetIntensity;
+    }
+
+    private IEnumerator RestoreLight(float targetIntensity, float duration)
+    {
+        float currentIntensity = sceneLight.intensity;
+        float time = 0;
+
+        while (time < duration)
+        {
+            sceneLight.intensity = Mathf.Lerp(currentIntensity, targetIntensity, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        sceneLight.intensity = targetIntensity;
+    }
+}

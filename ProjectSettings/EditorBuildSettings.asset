@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Assets/Game/Scene/Main Menu.unity
+    guid: 0d2385f7f686e254482c6f3f26942064
+  - enabled: 1
+    path: Assets/Assets/Game/Scene/Game.unity
+    guid: e0560901870aa50449da01245c495e6e
+  - enabled: 1
+    path: Assets/Assets/Game/Scene/Minigame Booths/Booth Scenes/Whack-a-Mole Files/WhackaMole.unity
+    guid: 682ab5e20427bb34290fe432330fa4f2
+  - enabled: 1
+    path: Assets/Assets/Game/Scene/Minigame Booths/Booth Scenes/Ballon Pop/Balloon
+      Pop Scene.unity
+    guid: f7d52f27768c99540aae2d5dcdb34798
+  - enabled: 1
+    path: Assets/Assets/Game/Scene/Minigame Booths/Arcade Mode/WAM Arcade.unity
+    guid: e7a31d1db4a824c43907175f5f360b97
+  - enabled: 1
+    path: Assets/Assets/Game/Scene/Minigame Booths/Arcade Mode/BP Arcade.unity
+    guid: 2aab4267b6d6f2c488dc882ae36a3071
+  - enabled: 1
+    path: Assets/Assets/Game/Scene/Carnival Prize Menu.unity
+    guid: ca519fe76354b2f4abd9892de5a9ac5e
+  - enabled: 1
+    path: Assets/Assets/Game/EnemyAI/CREATURE/JUMPSCARE.unity
+    guid: 8cf054bfcae13fc4fa7bd56490175266
+  m_configObjects: {}
